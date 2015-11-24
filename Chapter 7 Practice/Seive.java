@@ -9,6 +9,16 @@ public class Seive
         {
             numbers[i]=i+1;
         }
-        System.out.println(Arrays.toString(numbers));
+        for (int i=2;i<8;i++)
+        {
+            for (int i2=0;i2<numbers.length;i2++)
+            {
+                if (numbers[i2]%i==0)
+                {
+                    numbers=ArrayMethods.remove(numbers , i2);                    
+                }
+            }
+        }
+        System.out.println("Primes under 122 and more than 10: "+Arrays.toString(numbers));
     }
 }

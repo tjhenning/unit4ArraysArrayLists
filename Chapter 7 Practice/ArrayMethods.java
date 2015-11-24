@@ -10,6 +10,7 @@ public class ArrayMethods
         
         //int[] holdlist=new int[x.length];
         System.out.println(Arrays.toString(x));
+        System.out.println(Arrays.toString(removeMiddle(x)));
         System.out.println(Arrays.toString(pushRight(x)));
         System.out.println(Arrays.toString(allEvensTo0(x)));
         System.out.println(Arrays.toString(setToLargestAdjacent(x)));
@@ -64,12 +65,12 @@ public class ArrayMethods
     {    
         if (x.length%2==0)
         {
-            x[x.length/2]=99;
-            x[x.length/2 -1]=99;
+            x=remove(x,x.length/2);
+            x=remove(x,(x.length/2));
         }
         else
         {
-            x[x.length/2]=99;
+            x=remove(x,x.length/2);
         }
         return x;
     }
@@ -149,5 +150,19 @@ public class ArrayMethods
             }
         }
         return false;
+    }
+    public static int[] remove(int[] x, int index)
+    {
+        int[] nx= new int[x.length-1];
+        int i2=0;        
+        for (int i=0;i<x.length;i++)
+        {
+            if (i!=index)
+            {
+                nx[i2]=x[i];
+                i2++;
+            }
+        }
+        return nx;
     }
 }
