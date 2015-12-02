@@ -1,27 +1,24 @@
 // Implements a 2-D array of characters
+import java.util.Arrays;
 
 public class CharMatrix
 {
   // Instance variables:
-  private char[][] grid=new char[1][1];
-  private int rows;
-  private int cols;
+  private char[][] grid=new char[33][33];
+  
+ 
   // Constructor: creates a grid with dimensions rows, cols,
   // and fills it with spaces
-  public CharMatrix(int rows1, int cols1)
+  public CharMatrix(int rows, int cols)
   {
-    rows=rows1;
-    cols=cols1;
-    char[][] grid= new char[rows][cols];
+     grid= new char[rows][cols];
   }
 
   // Constructor: creates a grid with dimensions rows , cols ,
   // and fills it with the fill  character
-  public CharMatrix(int rows1, int cols1, char fill)
+  public CharMatrix(int rows, int cols, char fill)
   {
-    rows=rows1;
-    cols=cols1;
-    char[][] grid= new char[rows][cols];
+     grid= new char[rows][cols];
     for (int i=0; i<rows;i++)
     {
         for (int i2=0; i2<cols;i2++)
@@ -29,18 +26,19 @@ public class CharMatrix
             grid[i][i2]=fill;
         }
     }
+    printGrid(grid);
   }
 
   // Returns the number of rows in grid
   public int numRows()
   {
-    return rows;
+    return grid.length;
   }
 
   // Returns the number of columns in grid
   public int numCols()
   {
-    return cols;
+    return grid[0].length;
   }
 
   // Returns the character at row, col location
@@ -67,14 +65,13 @@ public class CharMatrix
   // lower right corner of the rectangle.
   public void fillRect(int row0, int col0, int row1, int col1, char fill)
   {
-    for (int i=0; i<rows;i++)
+   //   printGrid(grid);
+    //  System.out.println("Running fillRect");
+    for (int i=row0; i<=row1;i++)
     {
-        for (int i2=0; i2<cols;i2++)
+        for (int i2=col0; i2<=col1;i2++)
         {
-            if (i>row0&&i2<col0&&i<row1&&i2>col1)
-            {
-                grid[i][i2]=fill;
-            }
+            grid[i][i2]=fill;            
         }
     }
   }
@@ -84,23 +81,23 @@ public class CharMatrix
   // lower right corner of the rectangle.
   public void clearRect(int row0, int col0, int row1, int col1)
   {
-    for (int i=0; i<rows;i++)
+      //System.out.println("Running clearRect");
+      //System.out.println(row0+" "+col0+ " second "+row1+" "+col1);     
+    for (int i=row0; i<=row1;i++)
     {
-        for (int i2=0; i2<cols;i2++)
+        for (int i2=col0; i2<=col1;i2++)
         {
-            if (i>row0&&i2<col0&&i<row1&&i2>col1)
-            {
-                grid[i][i2]=' ';
-            }
+            grid[i][i2]=' ';            
         }
     }
+    //printGrid(grid);
   }
 
   // Returns the count of all non-space characters in row 
   public int countInRow(int row)
   {
     int num=0;
-    for (int i=0; i<rows;i++)
+    for (int i=0; i<grid.length;i++)
     {
         if (grid[row][i]==' ')
         {
@@ -109,14 +106,26 @@ public class CharMatrix
     }
     return num;
   }
-
+  public static void printGrid(char[][] grid)
+  {
+      for (int i=0;i<grid.length;i++)
+      {
+          System.out.println(Arrays.toString(grid[i]));
+        }
+    }
+  
   // Returns the count of all non-space characters in col 
   public int countInCol(int col)
   {
     int num=0;
-    for (int i=0; i<rows;i++)
+    int[] newx= new int[grid.length];
+    for (int i=0;i<grid.length;i++)
     {
-        if (grid[i][col]==' ')
+        newx[i]=grid[i][col];
+    }
+    for (int i=0; i<grid.length;i++)
+    {
+        if (newx[i]!=' ')
         {
             num++;
         }

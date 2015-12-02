@@ -1,4 +1,5 @@
-
+import java.util.Arrays;
+import java.util.Scanner;
 /**
  * The model for radar scan and accumulator
  * 
@@ -34,17 +35,23 @@ public class Radar
     public Radar(int rows, int cols)
     {
         // initialize the currentScan 2D array and the accumulator 2D array
-        
-        
-        //
-        // !!! add code here !!!
-        //
-        
+        currentScan=new boolean[100][100];
+        accumulator=new int[100][100];
+        for (int i=0; i<100;i++)
+        {
+            for (int i2=0; i2<100;i2++)
+            {
+                currentScan[i][i2]=false;
+            }
+        }
         
         // randomly set the location of the monster (can be explicity set through the
         //  setMonsterLocation method for the unit test
-        monsterLocationRow = (int)(Math.random() * rows);
-        monsterLocationCol = (int)(Math.random() * cols);
+        Scanner s=new Scanner(System.in);
+        System.out.println("Set row #: ");
+        monsterLocationRow = s.nextInt();//(int)(Math.random() * rows);
+        System.out.println("Set column #: ");
+        monsterLocationCol = s.nextInt();//(int)(Math.random() * cols);
         
         noiseFraction = 0.05;
         numScans= 0;
@@ -62,12 +69,33 @@ public class Radar
         //    3. inject noise into the grid
         //    4. update the accumulator 2D array based on the state of the currentScan 2D array
         //    5. increment the numScans instance variable
-        
-        
-        //
-        // !!! add code here !!!
-        //
-        
+        //System.out.println("Running "+numScans);
+        for (int i=0; i<currentScan.length;i++)
+        {
+            for (int i2=0; i2<currentScan[0].length;i2++)
+            {
+                currentScan[i][i2]=false;
+            }
+        }
+        for (int i=0; i<currentScan.length;i++)
+        {
+            for (int i2=0; i2<currentScan[0].length;i2++)
+            {
+                currentScan[monsterLocationRow][monsterLocationCol]=true;
+            }
+        }
+        injectNoise();
+        for (int i=0; i<currentScan.length;i++)
+        {
+            for (int i2=0; i2<currentScan[0].length;i2++)
+            {
+                if (currentScan[i][i2]==true)
+                {
+                    accumulator[i][i2]++;
+                }
+            }
+        }        
+        numScans++;
         
     }
 
@@ -164,14 +192,18 @@ public class Radar
         // Iterate through all cells in the currentScan 2D array to inject noise by setting false positives.
         // The noiseFraction instance variable is the probability that a given cell will be
         // detected as a false positive. Use the Math.random method to determine if each cell should be set
-        // as a false positive.
+        // as a false positive.        
         
-        
-        //
-        // !!! add code here !!!
-        //
-        
-        
+        for (int i=0; i<currentScan.length;i++)
+        {
+            for (int i2=0; i2<currentScan[0].length;i2++)
+            {
+                if (Math.random()<noiseFraction)
+                {
+                    currentScan[i][i2]=true;
+                }
+            }
+        }
     }
     
 }
