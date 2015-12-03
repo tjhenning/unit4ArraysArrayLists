@@ -46,7 +46,7 @@ public class RadarViewerTest
     }
     
     @Test
-    public void test() throws InterruptedException
+    public void test()// throws InterruptedException
     {
         final int ROWS = 100;
         final int COLS = 100;
@@ -75,12 +75,15 @@ public class RadarViewerTest
         // after each scan, instruct the Java Run-Time to redraw the window
         for(int i = 0; i < 100; i++)
         {
-            Thread.sleep(100); // sleep 100 milliseconds (1/10 second)
+            //Thread.sleep(100); // sleep 100 milliseconds (1/10 second)
             
             radar.scan();
             
             frame.repaint();
         }
+        int[] detect=radar.getDetected();
+        assertEquals(detect[0],4);
+        assertEquals(detect[1],4);
     }
 
 }

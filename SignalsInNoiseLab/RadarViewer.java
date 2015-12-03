@@ -18,7 +18,7 @@ public class RadarViewer
         final int ROWS = 100;
         final int COLS = 100;
         Radar radar = new Radar(ROWS, COLS);
-        radar.setNoiseFraction(0.10);
+        radar.setNoiseFraction(0.05);
         radar.scan();
         
         JFrame frame = new JFrame();
@@ -47,6 +47,9 @@ public class RadarViewer
             
             frame.repaint();
         }
+        int[] detect=radar.getDetected();
+        System.out.println("Monster detected at "+detect[0]+" "+detect[1]);
+        
     }
 
 }

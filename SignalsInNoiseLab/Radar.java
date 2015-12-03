@@ -184,6 +184,32 @@ public class Radar
     }
     
     /**
+     * Returns the location that has been positive the most times- where the monster is detected
+     * 
+     * @return where the monster is detected in int[] form
+     */
+    public int[] getDetected()
+    {
+        int sent=0;
+        int biggestx=0;
+        int biggesty=0;
+        for (int i=0; i<currentScan.length;i++)
+        {
+            for (int i2=0; i2<currentScan[0].length;i2++)
+            {
+                if (accumulator[i][i2]>=sent)
+                {
+                    sent=accumulator[i][i2];
+                    biggestx=i;
+                    biggesty=i2;
+                }
+            }
+        }        
+        int[] r={biggestx,biggesty};
+        return r;
+    }
+    
+    /**
      * Sets cells as falsely triggering detection based on the specified probability
      * 
      */
