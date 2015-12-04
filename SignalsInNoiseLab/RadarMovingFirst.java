@@ -6,14 +6,13 @@ import java.util.Scanner;
  * @author @gcschmit
  * @version 19 July 2014
  */
-public class Radar
+public class RadarMovingFirst
 {
     
     // stores whether each cell triggered detection for the current scan of the radar
     // (true represents a detected monster, which may be a false positive)
     private boolean[][] currentScan;
     private boolean isMoving=false;
-    private int[][] original;
     // value of each cell is incremented for each scan in which that cell triggers detection
     private int[][] accumulator;
     
@@ -33,15 +32,14 @@ public class Radar
      * @param   rows    the number of rows in the radar grid
      * @param   cols    the number of columns in the radar grid
      */
-    public Radar(int rows, int cols)
+    public RadarMovingFirst(int rows, int cols)
     {
         // initialize the currentScan 2D array and the accumulator 2D array
-        currentScan=new boolean[rows][cols];
-        accumulator=new int[rows][cols];
-        //lastScan=new boolean[100][100];
-        for (int i=0; i<rows;i++)
+        currentScan=new boolean[100][100];
+        accumulator=new int[100][100];
+        for (int i=0; i<100;i++)
         {
-            for (int i2=0; i2<cols;i2++)
+            for (int i2=0; i2<100;i2++)
             {
                 currentScan[i][i2]=false;
             }
@@ -76,7 +74,26 @@ public class Radar
         //    4. update the accumulator 2D array based on the state of the currentScan 2D array
         //    5. increment the numScans instance variable
         //System.out.println("Running "+numScans);
-        double mod=Math.random();
+        if (isMoving)
+        {
+            if (monsterLocationRow==currentScan.length-1)
+            {
+                monsterLocationRow=0;
+            }
+            else
+            {
+                monsterLocationRow++;
+            }
+        }
+        for (int i2=0; i2<accumulator.length;i2++)
+        {
+            int hold=accumulator[accumulator.length-1][i2];
+            for (int i=accumulator[0].length-1;i>=1;i--)
+            {
+                accumulator[i][i2]=accumulator[i-1][i2];
+            }
+            accumulator[0][i2]=hold;
+        }
         for (int i=0; i<currentScan.length;i++)
         {
             for (int i2=0; i2<currentScan[0].length;i2++)
@@ -84,58 +101,6 @@ public class Radar
                 currentScan[i][i2]=false;
             }
         }
-        if (isMoving)
-        {
-            if (mod>.8)
-            {
-                if (monsterLocationRow==currentScan.length-1)
-                {
-                    monsterLocationRow=0;
-                }
-                else
-                {
-                    monsterLocationRow++;
-                }
-            }
-            else if (mod>.6)
-            {
-                if (monsterLocationRow==0)
-                {
-                    monsterLocationRow=currentScan.length-1;
-                }
-                else
-                {
-                    monsterLocationRow--;
-                }
-            }
-            else if (mod>.5)
-            {
-                //
-            }
-            else if (mod>.2)
-            {
-                 if (monsterLocationCol==currentScan.length-1)
-                {
-                    monsterLocationCol=0;
-                }
-                else
-                {
-                    monsterLocationCol++;
-                }
-            }
-            else
-            {
-                 if (monsterLocationCol==0)
-                {
-                    monsterLocationCol=currentScan.length-1;
-                }
-                else
-                {
-                    monsterLocationCol--;
-                }
-            }
-        }        
-        
         for (int i=0; i<currentScan.length;i++)
         {
             for (int i2=0; i2<currentScan[0].length;i2++)
@@ -144,61 +109,6 @@ public class Radar
             }
         }
         injectNoise();
-        if(isMoving){
-                for (int i=0; i<currentScan.length&&numScans!=0;i++)
-                {
-                    for (int i2=0; i2<currentScan[0].length;i2++)
-                    {
-                        if (accumulator[i][i2]==1)
-                        {
-                            String around=checkAround(i,i2);
-                            int xchangen=i-1;
-                            int xchangep=i+1;
-                            int ychangen=i2-1;
-                            int ychangep=i2+1;
-                            int row=100;
-                            if (i==0)
-                            {
-                                xchangen=row-1;
-                            }
-                            else if (i==row-1)
-                            {
-                                xchangep=0;
-                            }     
-                            if (i2==0)
-                            {
-                                ychangen=row-1;
-                            }
-                            else if (i2==row-1)
-                            {
-                                ychangep=0;
-                            }      
-                            if(around.contains("u"))
-                            {accumulator[i][ychangen]=1;}
-                            else
-                            {accumulator[i][ychangen]=0;}
-                            if(around.contains("d"))
-                            {accumulator[i][ychangep]=1;}
-                            else
-                            {accumulator[i][ychangep]=0;}
-                            if(around.contains("l"))
-                            {accumulator[xchangen][i2]=1;}
-                            else
-                            {accumulator[xchangen][i2]=0;}
-                            if(around.contains("r"))
-                            {accumulator[xchangep][i2]=1;}
-                            else
-                            {accumulator[xchangep][i2]=0;}
-                            if(around.contains("n"))
-                            {accumulator[i][i2]=1;}
-                            else
-                            {accumulator[i][i2]=0;}
-                        }
-                    }
-                }
-            }
-        
-        else{            
         for (int i=0; i<currentScan.length;i++)
         {
             for (int i2=0; i2<currentScan[0].length;i2++)
@@ -208,10 +118,8 @@ public class Radar
                     accumulator[i][i2]++;
                 }
             }
-        }       
-        }
+        }        
         numScans++;
-        //lastScan=currentScan.clone();
         
     }
 
@@ -230,25 +138,6 @@ public class Radar
         
         // update the radar grid to show that something was detected at the specified location
         currentScan[row][col] = true;
-    }
-    
-    public void setOriginal()
-    {
-        for (int i=0; i<currentScan.length;i++)
-        {
-            for (int i2=0; i2<currentScan[0].length;i2++)
-            {
-                if (currentScan[i][i2])
-                {
-                    accumulator[i][i2]=1;
-                }
-                else
-                {
-                    accumulator[i][i2]=0;
-                }
-            }
-        }    
-        //original=currentScan.clone();
     }
     
      /**
@@ -343,53 +232,7 @@ public class Radar
         int[] r={biggestx,biggesty};
         return r;
     }
-    public int[] getMonsterLocation()
-    {
-        int[] r={monsterLocationRow,monsterLocationCol};
-        return r;
-    }
     
-    public String checkAround(int x, int y)
-    {        
-        String retrn=new String("");
-//         if (currentScan[x-1][y-1]&&x!=0&&y!=0)
-//             {
-//                 return true;
-//             }
-        if (x!=0&&currentScan[x-1][y])
-            {
-                retrn+="l";
-            }
-//         if (currentScan[x-1][y+1]&&x!=0&&y+1!=currentScan.length)
-//         {
-//             return true;
-//         }
-        if (y!=0&&currentScan[x][y-1])
-        {
-            retrn+="u";
-        }
-         if (currentScan[x][y])
-         {
-             retrn+="n";
-         }
-        if (y+1!=currentScan.length&&currentScan[x][y+1])
-        {
-            retrn +="d";
-        }
-//         if (currentScan[x+1][y-1]&&x+1!=currentScan.length&&y!=0)
-//         {
-//             return true;
-//         }
-        if (x+1!=currentScan.length&&currentScan[x+1][y])
-        {
-            retrn+="r";
-        }
-//         if (currentScan[x+1][y+1]&&y+1!=currentScan.length&&x+1!=currentScan.length)
-//         {
-//             return true;
-//         }
-        return retrn;
-    }
     /**
      * Sets cells as falsely triggering detection based on the specified probability
      * 

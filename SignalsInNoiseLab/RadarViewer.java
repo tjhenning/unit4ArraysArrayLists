@@ -20,7 +20,7 @@ public class RadarViewer
         Radar radar = new Radar(ROWS, COLS);
         radar.setNoiseFraction(0.05);
         radar.scan();
-        
+        radar.setOriginal();
         JFrame frame = new JFrame();
         
         frame.setTitle("Signals in Noise Lab");
@@ -39,16 +39,20 @@ public class RadarViewer
         
         // perform 100 scans of the radar wiht a slight pause between each
         // after each scan, instruct the Java Run-Time to redraw the window
-        for(int i = 0; i < 100; i++)
+        for(int i = 0; i < 30; i++)
         {
             Thread.sleep(100); // sleep 100 milliseconds (1/10 second)
             
             radar.scan();
             
             frame.repaint();
+            int[] detect=radar.getMonsterLocation();
+            System.out.println("Monster actually at "+detect[0]+" "+detect[1]);
         }
         int[] detect=radar.getDetected();
         System.out.println("Monster detected at "+detect[0]+" "+detect[1]);
+        detect=radar.getMonsterLocation();
+        System.out.println("Monster actually at "+detect[0]+" "+detect[1]);
         
     }
 
