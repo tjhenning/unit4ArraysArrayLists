@@ -26,6 +26,8 @@ public class Radar
     
     // number of scans of the radar since construction
     private int numScans;
+    public int debugi;
+    public int debugi2;
 
     /**
      * Constructor for objects of class Radar
@@ -86,6 +88,7 @@ public class Radar
         }
         if (isMoving)
         {
+            
             if (mod>.8)
             {
                 if (monsterLocationRow==currentScan.length-1)
@@ -134,7 +137,7 @@ public class Radar
                     monsterLocationCol--;
                 }
             }
-        }        
+        }       
         
         for (int i=0; i<currentScan.length;i++)
         {
@@ -143,7 +146,7 @@ public class Radar
                 currentScan[monsterLocationRow][monsterLocationCol]=true;
             }
         }
-        injectNoise();
+        injectNoise();        
         if(isMoving){
                 for (int i=0; i<currentScan.length&&numScans!=0;i++)
                 {
@@ -151,12 +154,15 @@ public class Radar
                     {
                         if (accumulator[i][i2]==1)
                         {
+                            int[] detect=getMonsterLocation();
+                            //System.out.println("Scan: "+numScans+". Checking "+i+" "+i2+", monster actually at "+detect[0]+" "+detect[1]);
                             String around=checkAround(i,i2);
                             int xchangen=i-1;
                             int xchangep=i+1;
                             int ychangen=i2-1;
                             int ychangep=i2+1;
                             int row=100;
+                            //System.out.println("  String: "+around);
                             if (i==0)
                             {
                                 xchangen=row-1;
@@ -174,31 +180,23 @@ public class Radar
                                 ychangep=0;
                             }      
                             if(around.contains("u"))
-                            {accumulator[i][ychangen]=1;}
-                            else
-                            {accumulator[i][ychangen]=0;}
+                            {accumulator[i][ychangen]=1;;}
                             if(around.contains("d"))
                             {accumulator[i][ychangep]=1;}
-                            else
-                            {accumulator[i][ychangep]=0;}
                             if(around.contains("l"))
                             {accumulator[xchangen][i2]=1;}
-                            else
-                            {accumulator[xchangen][i2]=0;}
                             if(around.contains("r"))
                             {accumulator[xchangep][i2]=1;}
-                            else
-                            {accumulator[xchangep][i2]=0;}
                             if(around.contains("n"))
                             {accumulator[i][i2]=1;}
                             else
-                            {accumulator[i][i2]=0;}
+                            {accumulator[i][i2]=0;}                            
                         }
                     }
                 }
             }
         
-        else{            
+        else{      
         for (int i=0; i<currentScan.length;i++)
         {
             for (int i2=0; i2<currentScan[0].length;i2++)
@@ -211,7 +209,6 @@ public class Radar
         }       
         }
         numScans++;
-        //lastScan=currentScan.clone();
         
     }
 
@@ -332,16 +329,19 @@ public class Radar
         {
             for (int i2=0; i2<currentScan[0].length;i2++)
             {
-                if (accumulator[i][i2]>=sent)
+                if (accumulator[i][i2]>sent)
                 {
                     sent=accumulator[i][i2];
                     biggestx=i;
                     biggesty=i2;
                 }
+                else if (accumulator[i][i2]==sent)
+                {                    
+                    return new int[] {-1,-1};
+                }
             }
-        }        
-        int[] r={biggestx,biggesty};
-        return r;
+        }               
+        return new int[] {biggestx,biggesty};
     }
     public int[] getMonsterLocation()
     {

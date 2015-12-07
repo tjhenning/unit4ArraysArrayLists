@@ -45,11 +45,22 @@ public class RadarViewer
             
             radar.scan();
             
-            frame.repaint();
-            int[] detect=radar.getMonsterLocation();
-            System.out.println("Monster actually at "+detect[0]+" "+detect[1]);
+            frame.repaint();                 
         }
         int[] detect=radar.getDetected();
+        while (detect[0]==-1)
+        {
+                for(int i = 0; i < 30; i++)
+            {
+                Thread.sleep(100); 
+                
+                radar.scan();
+                
+                frame.repaint();
+                         
+            }          
+            detect=radar.getDetected();
+        }
         System.out.println("Monster detected at "+detect[0]+" "+detect[1]);
         detect=radar.getMonsterLocation();
         System.out.println("Monster actually at "+detect[0]+" "+detect[1]);
