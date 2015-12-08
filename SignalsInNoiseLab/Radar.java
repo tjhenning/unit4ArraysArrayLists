@@ -245,7 +245,6 @@ public class Radar
                 }
             }
         }    
-        //original=currentScan.clone();
     }
     
      /**
@@ -294,6 +293,15 @@ public class Radar
     {
         return currentScan.length;
     }
+    /**
+     * Returns whether the monster is moving
+     * 
+     * @return whether the monster is moving
+     */
+    public boolean getIsMoving()
+    {
+        return isMoving;
+    }
     
     /**
      * Returns the number of columns in the radar grid
@@ -316,7 +324,7 @@ public class Radar
     }
     
     /**
-     * Returns the location that has been positive the most times- where the monster is detected
+     * Returns the location that has been positive the most times/where the monster is detected
      * 
      * @return where the monster is detected in int[] form
      */
@@ -335,7 +343,7 @@ public class Radar
                     biggestx=i;
                     biggesty=i2;
                 }
-                else if (accumulator[i][i2]==sent)
+                else if (accumulator[i][i2]==sent&&sent!=0&&isMoving)
                 {                    
                     return new int[] {-1,-1};
                 }
@@ -352,42 +360,47 @@ public class Radar
     public String checkAround(int x, int y)
     {        
         String retrn=new String("");
-//         if (currentScan[x-1][y-1]&&x!=0&&y!=0)
-//             {
-//                 return true;
-//             }
-        if (x!=0&&currentScan[x-1][y])
+        int xchangen=x-1;
+        int xchangep=x+1;
+        int ychangen=y-1;
+        int ychangep=y+1;
+        int row=100;
+        if (x==0)
+        {
+            xchangen=row-1;
+        }
+        else if (x==row-1)
+        {
+            xchangep=0;
+        }     
+        if (y==0)
+        {
+            ychangen=row-1;
+        }
+        else if (y==row-1)
+        {
+            ychangep=0;
+        }      
+        if (currentScan[xchangen][y])
             {
                 retrn+="l";
             }
-//         if (currentScan[x-1][y+1]&&x!=0&&y+1!=currentScan.length)
-//         {
-//             return true;
-//         }
-        if (y!=0&&currentScan[x][y-1])
+        if (currentScan[x][ychangen])
         {
             retrn+="u";
         }
-         if (currentScan[x][y])
-         {
-             retrn+="n";
-         }
-        if (y+1!=currentScan.length&&currentScan[x][y+1])
+        if (currentScan[x][y])
+        {
+            retrn+="n";
+        }
+        if (currentScan[x][ychangep])
         {
             retrn +="d";
         }
-//         if (currentScan[x+1][y-1]&&x+1!=currentScan.length&&y!=0)
-//         {
-//             return true;
-//         }
-        if (x+1!=currentScan.length&&currentScan[x+1][y])
+        if (currentScan[xchangep][y])
         {
             retrn+="r";
         }
-//         if (currentScan[x+1][y+1]&&y+1!=currentScan.length&&x+1!=currentScan.length)
-//         {
-//             return true;
-//         }
         return retrn;
     }
     /**
@@ -396,11 +409,6 @@ public class Radar
      */
     private void injectNoise()
     {
-        // Iterate through all cells in the currentScan 2D array to inject noise by setting false positives.
-        // The noiseFraction instance variable is the probability that a given cell will be
-        // detected as a false positive. Use the Math.random method to determine if each cell should be set
-        // as a false positive.        
-        
         for (int i=0; i<currentScan.length;i++)
         {
             for (int i2=0; i2<currentScan[0].length;i2++)

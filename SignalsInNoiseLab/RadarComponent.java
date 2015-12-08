@@ -98,10 +98,17 @@ public class RadarComponent extends JComponent
             {
                 int x = X_OFFSET + col * CELL_WIDTH_IN_PIXELS ;
                 int y = row * CELL_HEIGHT_IN_PIXELS ;
-                
+                float pixelValue;
                 Rectangle2D.Double rect = new Rectangle2D.Double(x, y, CELL_WIDTH_IN_PIXELS , CELL_HEIGHT_IN_PIXELS );
                 
-                float pixelValue = (float)(radar.getAccumulatedDetection(row, col)); /// radar.getNumScans();
+                if (radar.getIsMoving())
+                {
+                    pixelValue = (float)(radar.getAccumulatedDetection(row, col)); /// radar.getNumScans();
+                }
+                else
+                {
+                    pixelValue = (float)(radar.getAccumulatedDetection(row, col))/ radar.getNumScans();
+                }
 
                 // due to floating-point rounding issues, pixelValue can end up slightly greater than 1.0
                 //  we'll cap it since the Color constructor requires values <= 1.0
