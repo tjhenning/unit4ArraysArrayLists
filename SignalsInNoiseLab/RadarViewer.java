@@ -36,11 +36,12 @@ public class RadarViewer
         // make the frame visible which will result in the paintComponent method being invoked on the
         //  component.
         frame.setVisible(true);
-        int[] detect={0,0};
+        int[][] detect=new int[10][2];
+        int[] detect2=new int[2];
         // perform 100 scans of the radar wiht a slight pause between each
         // after each scan, instruct the Java Run-Time to redraw the window
-        while (detect[0]==0)
-        {
+        //while (detect[0]==0)
+        //{
             for(int i = 0; i < 20; i++)
             {
                 Thread.sleep(100); // sleep 100 milliseconds (1/10 second)
@@ -50,18 +51,20 @@ public class RadarViewer
                 frame.repaint();                 
             }
             detect=radar.getDetected();
-            while (detect[0]==-1)
+            while (detect[0][0]==-1)
             {            
                 Thread.sleep(100);             
                 radar.scan();            
                 frame.repaint();                                           
                 detect=radar.getDetected();
             }
+        //}
+        for (int i=0;i<radar.getNumberOfMonsters();i++)
+        {   
+            System.out.println("Monster #"+(i+1)+" detected at "+detect[i][0]+" "+detect[i][1]);
+            detect2=radar.getMonsterLocation(i);
+            System.out.println("Monster actually at "+detect2[0]+" "+detect2[1]);
         }
-        System.out.println("Monster detected at "+detect[0]+" "+detect[1]);
-        detect=radar.getMonsterLocation();
-        System.out.println("Monster actually at "+detect[0]+" "+detect[1]);
-        
     }
 
 }

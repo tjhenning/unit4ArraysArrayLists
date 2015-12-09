@@ -6,7 +6,7 @@ import java.util.Scanner;
  * @author @gcschmit
  * @version 19 July 2014
  */
-public class Radar
+public class MRadar
 {
     
     // stores whether each cell triggered detection for the current scan of the radar
@@ -18,9 +18,9 @@ public class Radar
     private int[][] accumulator;
     
     // location of the monster
-    private int[] monsterLocationRow;
-    private int[] monsterLocationCol;
-    private int numberOfMonsters;
+    private int monsterLocationRow;
+    private int monsterLocationCol;
+    //private int numberOfMonsters;
 
     // probability that a cell will trigger a false detection (must be >= 0 and < 1)
     private double noiseFraction;
@@ -41,7 +41,7 @@ public class Radar
         // initialize the currentScan 2D array and the accumulator 2D array
         currentScan=new boolean[rows][cols];
         accumulator=new int[rows][cols];
-        
+        //lastScan=new boolean[100][100];
         for (int i=0; i<rows;i++)
         {
             for (int i2=0; i2<cols;i2++)
@@ -53,20 +53,11 @@ public class Radar
         // randomly set the location of the monster (can be explicity set through the
         //  setMonsterLocation method for the unit test
         Scanner s=new Scanner(System.in);
-        System.out.println("How many monsters do you want there to be?: ");
-        numberOfMonsters = s.nextInt();
-        monsterLocationRow=new int[numberOfMonsters];
-        monsterLocationCol=new int[numberOfMonsters];        
-        for (int i=0;i<numberOfMonsters;i++)
-        {            
-            System.out.println("Set the row # for monster #"+(i+1)+": ");
-            System.out.println(Arrays.toString(monsterLocationRow));
-            monsterLocationRow[i] = s.nextInt();//(int)(Math.random() * rows);
-            System.out.println("Set column # for monster #"+(i+1)+": ");
-            monsterLocationCol[i] = s.nextInt();//(int)(Math.random() * cols);
-        }
-        
-        System.out.println("Are the monster(s) moving?(y?): ");
+        System.out.println("Set row #: ");
+        monsterLocationRow = s.nextInt();//(int)(Math.random() * rows);
+        System.out.println("Set column #: ");
+        monsterLocationCol = s.nextInt();//(int)(Math.random() * cols);
+        System.out.println("Is the monster moving?(y?): ");
         if (s.next().equals("y"))
         {
             isMoving=true;
@@ -75,11 +66,6 @@ public class Radar
         numScans= 0;
     }
     
-    public int getNumberOfMonsters()
-    {
-        return numberOfMonsters;
-    }
-   
     /**
      * Performs a scan of the radar. Noise is injected into the grid and the accumulator is updated.
      * 
@@ -93,7 +79,7 @@ public class Radar
         //    4. update the accumulator 2D array based on the state of the currentScan 2D array
         //    5. increment the numScans instance variable
         //System.out.println("Running "+numScans);
-        double mod=0;
+        double mod=Math.random();
         for (int i=0; i<currentScan.length;i++)
         {
             for (int i2=0; i2<currentScan[0].length;i2++)
@@ -103,73 +89,73 @@ public class Radar
         }
         if (isMoving)
         {
-            for (int i=0;i<numberOfMonsters;i++)
-            { 
-                mod=Math.random();
-                if (mod>.8)
+            
+            if (mod>.8)
+            {
+                if (monsterLocationRow==currentScan.length-1)
                 {
-                    if (monsterLocationRow[i]==currentScan.length-1)
-                    {
-                        monsterLocationRow[i]=0;
-                    }
-                    else
-                    {
-                        monsterLocationRow[i]++;
-                    }
-                }
-                else if (mod>.6)
-                {
-                    if (monsterLocationRow[i]==0)
-                    {
-                        monsterLocationRow[i]=currentScan.length-1;
-                    }
-                    else
-                    {
-                        monsterLocationRow[i]--;
-                    }
-                }
-                else if (mod>.5)
-                {
-                    //
-                }
-                else if (mod>.2)
-                {
-                     if (monsterLocationCol[i]==currentScan.length-1)
-                    {
-                        monsterLocationCol[i]=0;
-                    }
-                    else
-                    {
-                        monsterLocationCol[i]++;
-                    }
+                    monsterLocationRow=0;
                 }
                 else
                 {
-                     if (monsterLocationCol[i]==0)
-                    {
-                        monsterLocationCol[i]=currentScan.length-1;
-                    }
-                    else
-                    {
-                        monsterLocationCol[i]--;
-                    }
+                    monsterLocationRow++;
+                }
+            }
+            else if (mod>.6)
+            {
+                if (monsterLocationRow==0)
+                {
+                    monsterLocationRow=currentScan.length-1;
+                }
+                else
+                {
+                    monsterLocationRow--;
+                }
+            }
+            else if (mod>.5)
+            {
+                //
+            }
+            else if (mod>.2)
+            {
+                 if (monsterLocationCol==currentScan.length-1)
+                {
+                    monsterLocationCol=0;
+                }
+                else
+                {
+                    monsterLocationCol++;
+                }
+            }
+            else
+            {
+                 if (monsterLocationCol==0)
+                {
+                    monsterLocationCol=currentScan.length-1;
+                }
+                else
+                {
+                    monsterLocationCol--;
                 }
             }
         }       
         
-        for (int i=0;i<numberOfMonsters;i++)
-        { 
-                currentScan[monsterLocationRow[i]][monsterLocationCol[i]]=true;
-           }    
+        for (int i=0; i<currentScan.length;i++)
+        {
+            for (int i2=0; i2<currentScan[0].length;i2++)
+            {
+                currentScan[monsterLocationRow][monsterLocationCol]=true;
+            }
+        }
         injectNoise();        
-         if(isMoving){
+        if(isMoving){
                 for (int i=0; i<currentScan.length&&numScans!=0;i++)
                 {
                     for (int i2=0; i2<currentScan[0].length;i2++)
                     {
                         if (accumulator[i][i2]==1)
                         {
-                            
+                            int[] detect=getMonsterLocation();
                             //System.out.println("Scan: "+numScans+". Checking "+i+" "+i2+", monster actually at "+detect[0]+" "+detect[1]);
                             String around=checkAround(i,i2);
                             int xchangen=i-1;
@@ -210,7 +196,6 @@ public class Radar
                     }
                 }
             }
-            
         
         else{      
         for (int i=0; i<currentScan.length;i++)
@@ -235,11 +220,11 @@ public class Radar
      * @param   col     the column in which the monster is located
      * @pre row and col must be within the bounds of the radar grid
      */
-    public void setMonsterLocation(int row, int col, int num)
+    public void setMonsterLocation(int row, int col)
     {
         // remember the row and col of the monster's location
-        monsterLocationRow[num] = row;
-        monsterLocationCol[num] = col;
+        monsterLocationRow = row;
+        monsterLocationCol = col;
         
         // update the radar grid to show that something was detected at the specified location
         currentScan[row][col] = true;
@@ -344,50 +329,33 @@ public class Radar
      * 
      * @return where the monster is detected in int[] form
      */
-    public int[][] getDetected()
+    public int[] getDetected()
     {
-        
-        
-        int howMany=0;
-        int[][] retrn=new int[numberOfMonsters][2];
-        if (isMoving)       
-        {            
-            for (int i=0; i<currentScan.length;i++)
-            {
-                for (int i2=0; i2<currentScan[0].length;i2++)
-                {
-                    if (accumulator[i][i2]==1)
-                    {
-                        retrn[howMany][0]=i;
-                        retrn[howMany][1]=i2;
-                        howMany++;
-                    }
-                }
-            }            
-        }
-        else 
+        int sent=0;
+        int biggestx=0;
+        int biggesty=0;
+        for (int i=0; i<currentScan.length;i++)
         {
-                
-            for (int i=0; i<currentScan.length;i++)
+            for (int i2=0; i2<currentScan[0].length;i2++)
             {
-                for (int i2=0; i2<currentScan[0].length;i2++)
+                if (accumulator[i][i2]>sent)
                 {
-                    if (accumulator[i][i2]==numScans)
-                    {
-                        retrn[howMany][0]=i;
-                        retrn[howMany][1]=i2;
-                        howMany++;
-                    }                    
+                    sent=accumulator[i][i2];
+                    biggestx=i;
+                    biggesty=i2;
                 }
-            }                     
-        }
-        return retrn;
+                else if (accumulator[i][i2]==sent&&sent!=0&&isMoving)
+                {                    
+                    return new int[] {-1,-1};
+                }
+            }
+        }               
+        return new int[] {biggestx,biggesty};
     }
-
-    public int[] getMonsterLocation(int num)
+    public int[] getMonsterLocation()
     {
-        return new int[] {monsterLocationRow[num],monsterLocationCol[num]};
-        //return r;
+        int[] r={monsterLocationRow,monsterLocationCol};
+        return r;
     }
     
     public String checkAround(int x, int y)

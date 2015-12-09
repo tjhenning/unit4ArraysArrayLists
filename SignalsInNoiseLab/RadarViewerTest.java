@@ -52,7 +52,7 @@ public class RadarViewerTest
         final int COLS = 100;
         Radar radar = new Radar(ROWS, COLS);
         radar.setNoiseFraction(0.10);
-        radar.setMonsterLocation(4,4);
+        radar.setMonsterLocation(4,4,0);
         radar.scan();
         
         JFrame frame = new JFrame();
