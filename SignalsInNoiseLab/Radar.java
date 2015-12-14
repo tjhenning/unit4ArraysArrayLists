@@ -27,8 +27,6 @@ public class Radar
     
     // number of scans of the radar since construction
     private int numScans;
-    public int debugi;
-    public int debugi2;
 
     /**
      * Constructor for objects of class Radar
@@ -59,8 +57,7 @@ public class Radar
         monsterLocationCol=new int[numberOfMonsters];        
         for (int i=0;i<numberOfMonsters;i++)
         {            
-            System.out.println("Set the row # for monster #"+(i+1)+": ");
-            System.out.println(Arrays.toString(monsterLocationRow));
+            System.out.println("Set the row # for monster #"+(i+1)+": ");            
             monsterLocationRow[i] = s.nextInt();//(int)(Math.random() * rows);
             System.out.println("Set column # for monster #"+(i+1)+": ");
             monsterLocationCol[i] = s.nextInt();//(int)(Math.random() * cols);
@@ -71,10 +68,16 @@ public class Radar
         {
             isMoving=true;
         }
-        noiseFraction = 0.05;
+        System.out.println("What should the noise fraction be, as a decimal?: ");
+        setNoiseFraction(s.nextDouble());
+        //noiseFraction = 0.05;
         numScans= 0;
     }
     
+    /** returns number of monsters.
+     * 
+     * @return number of monsters
+     */
     public int getNumberOfMonsters()
     {
         return numberOfMonsters;
@@ -245,6 +248,10 @@ public class Radar
         currentScan[row][col] = true;
     }
     
+    /**
+     * Sets the accumulator to reflect the results of the first scan.
+     * 
+     */
     public void setOriginal()
     {
         for (int i=0; i<currentScan.length;i++)
@@ -342,7 +349,7 @@ public class Radar
     /**
      * Returns the location that has been positive the most times/where the monster is detected
      * 
-     * @return where the monster is detected in int[] form
+     * @return where the monsters are detected in int[][] form with the first being which monster and the second being the x y postition.
      */
     public int[][] getDetected()
     {
@@ -358,6 +365,11 @@ public class Radar
                 {
                     if (accumulator[i][i2]==1)
                     {
+                        if (howMany==numberOfMonsters)
+                        {
+                            retrn[0][0]=-1;
+                            return retrn;
+                        }
                         retrn[howMany][0]=i;
                         retrn[howMany][1]=i2;
                         howMany++;
@@ -384,12 +396,25 @@ public class Radar
         return retrn;
     }
 
+    /**
+     * Returns location of a monster.
+     * 
+     * @param ID number of which monster you want to get the location for.
+     * @return the location of the monster as a 2-digit array.
+     */
     public int[] getMonsterLocation(int num)
     {
         return new int[] {monsterLocationRow[num],monsterLocationCol[num]};
         //return r;
     }
     
+    /**
+     * Returns string containing ID for each cardinal direction contatining a positive on the scan.
+     * 
+     * @param x x value to check
+     * y y value to check
+     * @return a string that represents which came up as true. For instance, if the string is "ur" then Up and Right have monsters.
+     */
     public String checkAround(int x, int y)
     {        
         String retrn=new String("");

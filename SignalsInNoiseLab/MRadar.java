@@ -36,7 +36,7 @@ public class MRadar
      * @param   rows    the number of rows in the radar grid
      * @param   cols    the number of columns in the radar grid
      */
-    public Radar(int rows, int cols)
+    public MRadar(int rows, int cols)
     {
         // initialize the currentScan 2D array and the accumulator 2D array
         currentScan=new boolean[rows][cols];

@@ -17,8 +17,9 @@ public class RadarViewer
         // create the radar, set the monster location, and perform the initial scan
         final int ROWS = 100;
         final int COLS = 100;
+                
         Radar radar = new Radar(ROWS, COLS);
-        radar.setNoiseFraction(0.05);
+        //radar.setNoiseFraction(noiseFraction);
         radar.scan();
         radar.setOriginal();
         JFrame frame = new JFrame();
@@ -53,17 +54,22 @@ public class RadarViewer
             detect=radar.getDetected();
             while (detect[0][0]==-1)
             {            
-                Thread.sleep(100);             
+                Thread.sleep(100/(radar.getNumScans()/20));             
                 radar.scan();            
                 frame.repaint();                                           
                 detect=radar.getDetected();
             }
         //}
+        System.out.println("Monster detected at: ");
         for (int i=0;i<radar.getNumberOfMonsters();i++)
         {   
-            System.out.println("Monster #"+(i+1)+" detected at "+detect[i][0]+" "+detect[i][1]);
+            System.out.println(detect[i][0]+" "+detect[i][1]);            
+        }
+        System.out.println("Monsters actually at: ");
+        for (int i=0;i<radar.getNumberOfMonsters();i++)
+        {   
             detect2=radar.getMonsterLocation(i);
-            System.out.println("Monster actually at "+detect2[0]+" "+detect2[1]);
+            System.out.println(detect2[0]+" "+detect2[1]);
         }
     }
 
