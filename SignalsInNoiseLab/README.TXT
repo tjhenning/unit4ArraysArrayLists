@@ -1,3 +1,13 @@
+Notes-
+Multiple monsters + high noise + moving monsters can mean that it can take a 
+loooong time to complete running. Above .2 noise is not reccommended.
+
+This lab would be harder with false negatives- the extentions would become
+much harder, and the moving monster one would be nearly impossible.
+
+
+
+
 Introduction
 
 The goal of this lab is to apply your understanding of 2D arrays to implement

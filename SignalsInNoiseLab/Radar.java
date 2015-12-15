@@ -34,7 +34,7 @@ public class Radar
      * @param   rows    the number of rows in the radar grid
      * @param   cols    the number of columns in the radar grid
      */
-    public Radar(int rows, int cols)
+    public Radar(int rows, int cols, boolean test)
     {
         // initialize the currentScan 2D array and the accumulator 2D array
         currentScan=new boolean[rows][cols];
@@ -49,27 +49,39 @@ public class Radar
         }
         
         // randomly set the location of the monster (can be explicity set through the
-        //  setMonsterLocation method for the unit test
-        Scanner s=new Scanner(System.in);
-        System.out.println("How many monsters do you want there to be?: ");
-        numberOfMonsters = s.nextInt();
-        monsterLocationRow=new int[numberOfMonsters];
-        monsterLocationCol=new int[numberOfMonsters];        
-        for (int i=0;i<numberOfMonsters;i++)
-        {            
-            System.out.println("Set the row # for monster #"+(i+1)+": ");            
-            monsterLocationRow[i] = s.nextInt();//(int)(Math.random() * rows);
-            System.out.println("Set column # for monster #"+(i+1)+": ");
-            monsterLocationCol[i] = s.nextInt();//(int)(Math.random() * cols);
-        }
-        
-        System.out.println("Are the monster(s) moving?(y?): ");
-        if (s.next().equals("y"))
+        //  setMonsterLocation method for the unit test        
+        if (!test)
         {
-            isMoving=true;
+            Scanner s=new Scanner(System.in);
+            System.out.println("How many monsters do you want there to be?: ");
+            numberOfMonsters = s.nextInt();
+            monsterLocationRow=new int[numberOfMonsters];
+            monsterLocationCol=new int[numberOfMonsters];        
+            for (int i=0;i<numberOfMonsters;i++)
+            {            
+                System.out.println("Set the row # for monster #"+(i+1)+": ");            
+                monsterLocationRow[i] = s.nextInt();//(int)(Math.random() * rows);
+                System.out.println("Set column # for monster #"+(i+1)+": ");
+                monsterLocationCol[i] = s.nextInt();//(int)(Math.random() * cols);
+            }
+            
+            System.out.println("Are the monster(s) moving?(y?): ");
+            if (s.next().equals("y"))
+            {
+                isMoving=true;
+            }
+            System.out.println("What should the noise fraction be, as a decimal?: ");
+            setNoiseFraction(s.nextDouble());
         }
-        System.out.println("What should the noise fraction be, as a decimal?: ");
-        setNoiseFraction(s.nextDouble());
+        else
+        {
+            numberOfMonsters=1;
+            monsterLocationRow=new int[1];
+            monsterLocationCol=new int[1]; 
+            monsterLocationRow[0]=4;
+            monsterLocationCol[0]=4;
+            isMoving=false;
+        }
         //noiseFraction = 0.05;
         numScans= 0;
     }
@@ -95,7 +107,6 @@ public class Radar
         //    3. inject noise into the grid
         //    4. update the accumulator 2D array based on the state of the currentScan 2D array
         //    5. increment the numScans instance variable
-        //System.out.println("Running "+numScans);
         double mod=0;
         for (int i=0; i<currentScan.length;i++)
         {
@@ -109,7 +120,7 @@ public class Radar
             for (int i=0;i<numberOfMonsters;i++)
             { 
                 mod=Math.random();
-                if (mod>.8)
+                if (mod>.77)
                 {
                     if (monsterLocationRow[i]==currentScan.length-1)
                     {
@@ -386,6 +397,11 @@ public class Radar
                 {
                     if (accumulator[i][i2]==numScans)
                     {
+                        if (howMany==numberOfMonsters)
+                        {
+                            retrn[0][0]=-1;
+                            return retrn;
+                        }
                         retrn[howMany][0]=i;
                         retrn[howMany][1]=i2;
                         howMany++;

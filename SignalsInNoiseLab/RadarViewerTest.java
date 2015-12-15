@@ -50,10 +50,11 @@ public class RadarViewerTest
     {
         final int ROWS = 100;
         final int COLS = 100;
-        System.out.println("Enter whatever numbers you want as long as you only make one monster.\nYou can SPAM 1 if you want.");
-        Radar radar = new Radar(ROWS, COLS);
-        radar.setNoiseFraction(0.10);
-        radar.setMonsterLocation(4,4,0);
+        int x=(int)(Math.random()*100);
+        int y=(int)(Math.random()*100);
+        Radar radar = new Radar(ROWS, COLS,true);
+        radar.setNoiseFraction(Math.random()*Math.random());
+        radar.setMonsterLocation(x,y,0);
         radar.scan();
         
         JFrame frame = new JFrame();
@@ -83,8 +84,8 @@ public class RadarViewerTest
             frame.repaint();
         }
         int[][] detect=radar.getDetected();
-        assertEquals(detect[0][0],4);
-        assertEquals(detect[0][1],4);
+        assertEquals(detect[0][0],x);
+        assertEquals(detect[0][1],y);
     }
 
 }
